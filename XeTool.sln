@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XeTool", "XeTool\XeTool.csproj", "{BBFD9E3A-91B5-4EFF-91BE-70043C1207FE}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "XeLib", "XeLib\XeLib.shproj", "{2E31223F-DD24-47ED-A1C2-A4E17A80328E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShadowBoot", "ShadowBoot\ShadowBoot.csproj", "{E49218D5-7278-40DE-B554-83663061D0EA}"
+EndProject
+Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		XeLib\XeLib.projitems*{e49218d5-7278-40de-b554-83663061d0ea}*SharedItemsImports = 4
+		XeLib\XeLib.projitems*{2e31223f-dd24-47ed-a1c2-a4e17a80328e}*SharedItemsImports = 13
+		XeLib\XeLib.projitems*{bbfd9e3a-91b5-4eff-91be-70043c1207fe}*SharedItemsImports = 4
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BBFD9E3A-91B5-4EFF-91BE-70043C1207FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBFD9E3A-91B5-4EFF-91BE-70043C1207FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBFD9E3A-91B5-4EFF-91BE-70043C1207FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBFD9E3A-91B5-4EFF-91BE-70043C1207FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E49218D5-7278-40DE-B554-83663061D0EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E49218D5-7278-40DE-B554-83663061D0EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E49218D5-7278-40DE-B554-83663061D0EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E49218D5-7278-40DE-B554-83663061D0EA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

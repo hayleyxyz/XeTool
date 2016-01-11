@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>2e31223f-dd24-47ed-a1c2-a4e17a80328e</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>XeLib</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Bootloader\SXBootloader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\Endian.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\XeReader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\XeWriter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ShadowBoot\ShadowBootRom.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\BufferUtils.cs" />
+  </ItemGroup>
+</Project>
