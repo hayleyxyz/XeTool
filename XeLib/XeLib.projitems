@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Bootloader\SXBootloader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Cryptography\XeCrypt.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\Endian.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\XeReader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\XeWriter.cs" />
