@@ -77,7 +77,8 @@ namespace XeLib.Utilities
 
         public static void FromUInt16(ushort value, byte[] buffer, int startIndex = 0, Endian endian = Endian.Big) {
             if(endian == Endian.Little) {
-
+                buffer[1] = (byte)((value >> 8) & 0xff);
+                buffer[0] = (byte)(value & 0xff);
             }
             else {
                 buffer[0] = (byte)((value >> 8) & 0xff);
