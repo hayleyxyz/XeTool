@@ -4,6 +4,7 @@ using System.Text;
 using System.IO;
 using XeLib.IO;
 using XeLib.Utilities;
+using XeLib.Cryptography;
 
 namespace XeLib.Bootloader
 {
@@ -24,21 +25,39 @@ namespace XeLib.Bootloader
         }
 
         public void Read() {
-            magic = reader.ReadUInt16();
-            version = reader.ReadUInt16();
+            // First read the header
+            var header = new byte[0x10];
+            reader.Read(header, 0, 0x10);
 
-            reader.Seek(4, SeekOrigin.Current);
-            entryPoint = reader.ReadUInt32();
-            length = reader.ReadUInt32();
+            // Parse info bits
+            magic = BufferUtils.ToUInt16(header, 0x00);
+            version = BufferUtils.ToUInt16(header, 0x02);
+            entryPoint = BufferUtils.ToUInt32(header, 0x08);
+            length = BufferUtils.ToUInt32(header, 0x0c);
 
-            data = new byte[length - 0x10];
-            reader.Read(data, 0, data.Length);
+            // Now that we have the length of the BL we can go back and read the entire thing
+            data = new byte[length];
+            Buffer.BlockCopy(header, 0, data, 0, header.Length);
+            reader.Read(data, 0x10, (int)length - 0x10);
         }
 
         public string GetMagicAsString() {
             var buf = new byte[2];
             BufferUtils.FromUInt16(magic, buf);
             return Encoding.UTF8.GetString(buf);
+        }
+
+        public static void Decrypt(ref byte[] inOut, byte[] hmacKey) {
+            // Hash 0x10 bytes starting at 0x10
+            var hash = XeCrypt.XeCryptHmacSha(hmacKey, inOut, 0x10, 0x10);
+
+            // We only need the first 0x10 bytes of the resulting hash
+            var rc4Key = new byte[0x10];
+            Buffer.BlockCopy(hash, 0, rc4Key, 0, 0x10);
+
+            // Decrypt the data
+            var rc4 = XeCrypt.XeCryptRc4Key(rc4Key);
+            XeCrypt.XeCryptRc4Ecb(rc4, ref inOut, 0x20, inOut.Length - 0x20);
         }
     }
 }

@@ -55,33 +55,9 @@ namespace XeLib.ShadowBoot
             sb.Read();
             bootloaders.Add(sb);
 
-            var hmacKey = new byte[] { 0xDD, 0x88, 0xAD, 0x0C, 0x9E, 0xD6, 0x69, 0xE7, 0xB5, 0x67, 0x94, 0xFB, 0x68, 0x56, 0x3E, 0xFA };
-
-            var hash = XeCrypt.XeCryptHmacSha(hmacKey, sb.data, 0, 0x10);
-
-            var rc4Key = new byte[0x10];
-            Buffer.BlockCopy(hash, 0, rc4Key, 0, 0x10);
-
-            var rc4 = XeCrypt.XeCryptRc4Key(rc4Key);
-            XeCrypt.XeCryptRc4Ecb(rc4, ref sb.data, 0x10, sb.data.Length - 0x10);
-
-            File.WriteAllBytes("C:\\SB.bin", sb.data);
-
             var sc = new SXBootloader(stream);
             sc.Read();
             bootloaders.Add(sc);
-
-            hmacKey = new byte[] { 0xF1, 0x98, 0x9B, 0xD8, 0x00, 0x95, 0x4A, 0x2A, 0xEA, 0x45, 0x5B, 0xB9, 0x89, 0x94, 0x9E, 0x07 };
-
-            hash = XeCrypt.XeCryptHmacSha(hmacKey, sc.data, 0, 0x10);
-
-            rc4Key = new byte[0x10];
-            Buffer.BlockCopy(hash, 0, rc4Key, 0, 0x10);
-
-            rc4 = XeCrypt.XeCryptRc4Key(rc4Key);
-            XeCrypt.XeCryptRc4Ecb(rc4, ref sc.data, 0x10, sc.data.Length - 0x10);
-
-            File.WriteAllBytes("C:\\SC.bin", sc.data);
 
             var sd = new SXBootloader(stream);
             sd.Read();
