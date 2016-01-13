@@ -3,16 +3,13 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using XeLib.IO;
-using XeLib.Bootloader;
+using XeLib.Bootloaders;
 using XeLib.Security;
 
 namespace XeLib.ShadowBoot
 {
     public class ShadowBootRom
     {
-        protected Stream stream;
-        protected XeReader reader;
-
         public ushort magic; // 0x00
         public ushort version; // 0x02
         public uint bootloaderOffset; // 0x08
@@ -22,14 +19,12 @@ namespace XeLib.ShadowBoot
         public uint smcSize; // 0x78
         public uint smcOffset; // 0x7d
 
-        public List<Bootloader.Bootloader> bootloaders;
+        public Bootloader SB;
+        public Bootloader SC;
+        public Bootloader SD;
+        public Bootloader SE;
 
-        public ShadowBootRom(Stream stream) {
-            this.stream = stream;
-            reader = new XeReader(stream);
-        }
-
-        public void Read() {
+        public void Read(XeReader reader) {
             reader.Seek(0, SeekOrigin.Begin);
 
             magic = reader.ReadUInt16();
@@ -49,23 +44,17 @@ namespace XeLib.ShadowBoot
 
             reader.Seek(bootloaderOffset, SeekOrigin.Begin);
 
-            bootloaders = new List<Bootloader.Bootloader>();
+            SB = new Bootloader();
+            SB.Read(reader);
 
-            var sb = new Bootloader.Bootloader(stream);
-            sb.Read();
-            bootloaders.Add(sb);
+            SC = new Bootloader();
+            SC.Read(reader);
 
-            var sc = new Bootloader.Bootloader(stream);
-            sc.Read();
-            bootloaders.Add(sc);
+            SD = new Bootloader();
+            SD.Read(reader);
 
-            var sd = new Bootloader.Bootloader(stream);
-            sd.Read();
-            bootloaders.Add(sd);
-
-            var se = new Bootloader.Bootloader(stream);
-            se.Read();
-            bootloaders.Add(se);
+            SE = new Bootloader();
+            SE.Read(reader);
         }
 
     }

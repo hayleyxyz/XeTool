@@ -6,25 +6,17 @@ using XeLib.IO;
 using XeLib.Utilities;
 using XeLib.Security;
 
-namespace XeLib.Bootloader
+namespace XeLib.Bootloaders
 {
     public class Bootloader
     {
-        protected Stream stream;
-        protected XeReader reader;
-
         public ushort magic; // 0x00
         public ushort version; // 0x02
         public uint entryPoint; // 0x08
         public uint length; // 0x0c
         public byte[] data;
 
-        public Bootloader(Stream stream) {
-            this.stream = stream;
-            reader = new XeReader(stream);
-        }
-
-        public void Read() {
+        public void Read(XeReader reader) {
             // First read the header
             var header = new byte[0x10];
             reader.Read(header, 0, 0x10);
