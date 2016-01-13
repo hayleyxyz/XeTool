@@ -19,6 +19,8 @@ namespace XeLib.ShadowBoot
         public uint smcSize; // 0x78
         public uint smcOffset; // 0x7d
 
+        public SMC SMC;
+
         public Bootloader SB;
         public Bootloader SC;
         public Bootloader SD;
@@ -41,6 +43,10 @@ namespace XeLib.ShadowBoot
             reader.Seek(0x78, SeekOrigin.Begin);
             smcSize = reader.ReadUInt32();
             smcOffset = reader.ReadUInt32();
+
+            reader.Seek(smcOffset, SeekOrigin.Begin);
+            SMC = new SMC();
+            SMC.Read(reader, (int)smcSize);
 
             reader.Seek(bootloaderOffset, SeekOrigin.Begin);
 

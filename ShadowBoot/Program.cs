@@ -94,6 +94,11 @@ namespace ShadowBoot {
             File.WriteAllBytes(String.Format("{0}\\{1}.bin", dir, rom.SE.GetMagicAsString()), rom.SE.data);
             #endregion
 
+            #region SMC
+            SMC.Decrypt(ref rom.SMC.data);
+            File.WriteAllBytes(String.Format("{0}\\SMC.bin", dir), rom.SMC.data);
+            #endregion
+
             stream.Close();
         }
 
