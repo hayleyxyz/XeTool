@@ -10,6 +10,35 @@
 #define LZX_API __declspec(dllimport)
 #endif
 
+typedef struct _LZX_DECOMPRESS {
+	LONG WindowSize;
+	LONG CpuType;
+} LZX_DECOMPRESS, *PLZX_DECOMPRESS;
+
+extern "C" {
+
+	DWORD LDICreateDecompression(
+		DWORD* pcbDataBlockMax,
+		LZX_DECOMPRESS* pvConfiguration,
+		DWORD pfnma,
+		DWORD pfnmf,
+		VOID* pcbSrcBufferMin,
+		DWORD* unknow,
+		DWORD* pcbDecompressed
+	);
+	
+	DWORD LDIDecompress(
+		DWORD context,
+		BYTE* pbSrc,
+		WORD cbSrc,
+		BYTE* pdDst,
+		DWORD* pcbDecompressed
+	);
+	
+	DWORD LDIDestroyDecompression(DWORD contect);
+
+}
+
 // This class is exported from the LZX.dll
 class LZX_API CLZX {
 public:
@@ -19,4 +48,8 @@ public:
 
 extern LZX_API int nLZX;
 
-LZX_API int fnLZX(void);
+extern "C" {
+
+	LZX_API int fnLZX(void);
+
+}
