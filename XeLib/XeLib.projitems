@@ -12,6 +12,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Bootloaders\Bootloader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bootloaders\SMC.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Compression\LZX.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Compression\LZXException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Security\StaticKeys.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Security\XeCrypt.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\Endian.cs" />

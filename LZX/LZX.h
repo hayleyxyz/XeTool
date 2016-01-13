@@ -25,19 +25,19 @@ extern "C" {
 		LPVOID pfnma,
 		LPVOID pfnmf,
 		LPVOID pcbSrcBufferMin,
-		LPDWORD unknow,
+		LPVOID* ppContext,
 		LPDWORD pcbDecompressed
 	);
 	
 	DWORD LDIDecompress(
-		DWORD context,
+		LPVOID context,
 		LPBYTE pbSrc,
 		WORD cbSrc,
 		LPBYTE pdDst,
 		LPDWORD pcbDecompressed
 	);
 	
-	DWORD LDIDestroyDecompression(DWORD contect);
+	DWORD LDIDestroyDecompression(LPVOID context);
 
 	FNALLOC(Kmem_alloc) {
 		return malloc(cb);
@@ -50,7 +50,7 @@ extern "C" {
 }
 
 extern "C" {
-
-	LZX_API DWORD CreateLZX(VOID);
-
+	LZX_API DWORD LZX_Create(LPVOID*);
+	LZX_API DWORD LZX_Decompress(LPVOID, LPBYTE, WORD, LPBYTE, LPDWORD);
+	LZX_API DWORD LZX_Destroy(LPVOID);
 }

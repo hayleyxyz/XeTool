@@ -9,6 +9,7 @@ using XeLib.ShadowBoot;
 using XeLib.Bootloaders;
 using XeLib.IO;
 using XeLib.Security;
+using XeLib.Compression;
 
 namespace ShadowBoot {
     class Program {
@@ -86,12 +87,44 @@ namespace ShadowBoot {
             File.WriteAllBytes(String.Format("{0}\\{1}.bin", dir, rom.SD.GetMagicAsString()), rom.SD.data);
             #endregion
 
-            #region SD
+            #region SE
             if (shouldDecrypt) {
-                Bootloader.Decrypt(ref rom.SE.data, sdDigest); // SC
+                Bootloader.Decrypt(ref rom.SE.data, sdDigest); // SE
             }
 
             File.WriteAllBytes(String.Format("{0}\\{1}.bin", dir, rom.SE.GetMagicAsString()), rom.SE.data);
+            #endregion
+
+            #region Decompress SE
+            var seStream = new MemoryStream(rom.SE.data);
+            var seReader = new XeReader(seStream);
+
+            seStream.Seek(0x30, SeekOrigin.Begin);
+            ushort packedSize = seReader.ReadUInt16();
+            uint unpackedSize = seReader.ReadUInt16();
+
+            var packedData = new byte[packedSize];
+            var unpackedData = new byte[unpackedSize];
+            seReader.Read(packedData, 0, packedSize);
+
+            var context = new IntPtr();
+            var result = LZX.LZX_Create(ref context);
+
+            if(result != 0) {
+                throw new LZXException();
+            }
+
+            result = LZX.LZX_Decompress(context, packedData, packedSize, unpackedData, ref unpackedSize);
+
+            if (result != 0) {
+                throw new LZXException();
+            }
+
+            LZX.LZX_Destroy(context);
+
+            File.WriteAllBytes("C:\\kernel.bin", unpackedData);
+
+            seStream.Close();
             #endregion
 
             #region SMC
