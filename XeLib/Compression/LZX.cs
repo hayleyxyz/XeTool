@@ -7,7 +7,7 @@ namespace XeLib.Compression
 {
     public class LZX
     {
-        [DllImport("LZX.dll")]
-        public static extern uint fnLZX();
+        [DllImport("LZX.dll", EntryPoint = "CreateLZX")]
+        public static extern uint CreateLZX();
     }
 }

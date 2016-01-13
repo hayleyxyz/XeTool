@@ -4,12 +4,8 @@
 #include "stdafx.h"
 #include "LZX.h"
 
-
-// This is an example of an exported variable
-LZX_API int nLZX=0;
-
 // This is an example of an exported function.
-LZX_API int fnLZX(void)
+LZX_API DWORD CreateLZX(VOID)
 {
 	DWORD pcbDataBlockMax = 0x8000;
 	LZX_DECOMPRESS pvConfiguration;
@@ -20,14 +16,9 @@ LZX_API int fnLZX(void)
 	DWORD unknown = 0;
 	DWORD pcbDecompressed = 0;
 
-	DWORD result = LDICreateDecompression(&pcbDataBlockMax, &pvConfiguration, NULL, NULL, (void*)0x370000, &unknown, &pcbDecompressed);
+	LPVOID mem = VirtualAlloc(NULL, 0x3000, MEM_COMMIT, PAGE_READWRITE);
+
+	DWORD result = LDICreateDecompression(&pcbDataBlockMax, &pvConfiguration, Kmem_alloc, Kmem_free, mem, &unknown, &pcbDecompressed);
 
     return result;
-}
-
-// This is the constructor of a class that has been exported.
-// see LZX.h for the class definition
-CLZX::CLZX()
-{
-    return;
 }

@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShadowBoot", "ShadowBoot\Sh
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LZX", "LZX\LZX.vcxproj", "{4500E5A4-8A67-4647-9BD8-BC8347881816}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LZXTest", "LZXTest\LZXTest.vcxproj", "{3AE6246B-E89C-44DD-81F6-92CC6B263923}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		XeLib\XeLib.projitems*{e49218d5-7278-40de-b554-83663061d0ea}*SharedItemsImports = 4
@@ -51,6 +53,7 @@ Global
 		{E49218D5-7278-40DE-B554-83663061D0EA}.Release|x86.ActiveCfg = Release|Any CPU
 		{E49218D5-7278-40DE-B554-83663061D0EA}.Release|x86.Build.0 = Release|Any CPU
 		{4500E5A4-8A67-4647-9BD8-BC8347881816}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{4500E5A4-8A67-4647-9BD8-BC8347881816}.Debug|Any CPU.Build.0 = Debug|Win32
 		{4500E5A4-8A67-4647-9BD8-BC8347881816}.Debug|x64.ActiveCfg = Debug|x64
 		{4500E5A4-8A67-4647-9BD8-BC8347881816}.Debug|x64.Build.0 = Debug|x64
 		{4500E5A4-8A67-4647-9BD8-BC8347881816}.Debug|x86.ActiveCfg = Debug|Win32
@@ -60,6 +63,17 @@ Global
 		{4500E5A4-8A67-4647-9BD8-BC8347881816}.Release|x64.Build.0 = Release|x64
 		{4500E5A4-8A67-4647-9BD8-BC8347881816}.Release|x86.ActiveCfg = Release|Win32
 		{4500E5A4-8A67-4647-9BD8-BC8347881816}.Release|x86.Build.0 = Release|Win32
+		{3AE6246B-E89C-44DD-81F6-92CC6B263923}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{3AE6246B-E89C-44DD-81F6-92CC6B263923}.Debug|Any CPU.Build.0 = Debug|Win32
+		{3AE6246B-E89C-44DD-81F6-92CC6B263923}.Debug|x64.ActiveCfg = Debug|x64
+		{3AE6246B-E89C-44DD-81F6-92CC6B263923}.Debug|x64.Build.0 = Debug|x64
+		{3AE6246B-E89C-44DD-81F6-92CC6B263923}.Debug|x86.ActiveCfg = Debug|Win32
+		{3AE6246B-E89C-44DD-81F6-92CC6B263923}.Debug|x86.Build.0 = Debug|Win32
+		{3AE6246B-E89C-44DD-81F6-92CC6B263923}.Release|Any CPU.ActiveCfg = Release|Win32
+		{3AE6246B-E89C-44DD-81F6-92CC6B263923}.Release|x64.ActiveCfg = Release|x64
+		{3AE6246B-E89C-44DD-81F6-92CC6B263923}.Release|x64.Build.0 = Release|x64
+		{3AE6246B-E89C-44DD-81F6-92CC6B263923}.Release|x86.ActiveCfg = Release|Win32
+		{3AE6246B-E89C-44DD-81F6-92CC6B263923}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
