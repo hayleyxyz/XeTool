@@ -4,11 +4,11 @@ using System.Text;
 using System.IO;
 using XeLib.IO;
 using XeLib.Utilities;
-using XeLib.Cryptography;
+using XeLib.Security;
 
 namespace XeLib.Bootloader
 {
-    public class SXBootloader
+    public class Bootloader
     {
         protected Stream stream;
         protected XeReader reader;
@@ -19,7 +19,7 @@ namespace XeLib.Bootloader
         public uint length; // 0x0c
         public byte[] data;
 
-        public SXBootloader(Stream stream) {
+        public Bootloader(Stream stream) {
             this.stream = stream;
             reader = new XeReader(stream);
         }
@@ -48,8 +48,18 @@ namespace XeLib.Bootloader
         }
 
         public static void Decrypt(ref byte[] inOut, byte[] hmacKey) {
+            var outDigest = new byte[0x10];
+            Decrypt(ref inOut, hmacKey, ref outDigest);
+        }
+
+        public static void Decrypt(ref byte[] inOut, byte[] hmacKey, ref byte[] digest) {
             // Hash 0x10 bytes starting at 0x10
             var hash = XeCrypt.XeCryptHmacSha(hmacKey, inOut, 0x10, 0x10);
+
+            // Copy resulting digest to parameter for use in decrpyting next BL 
+            if (digest != null) {
+                Buffer.BlockCopy(hash, 0, digest, 0, 0x10);
+            }
 
             // We only need the first 0x10 bytes of the resulting hash
             var rc4Key = new byte[0x10];

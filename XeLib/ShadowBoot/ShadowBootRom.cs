@@ -4,7 +4,7 @@ using System.Text;
 using System.IO;
 using XeLib.IO;
 using XeLib.Bootloader;
-using XeLib.Cryptography;
+using XeLib.Security;
 
 namespace XeLib.ShadowBoot
 {
@@ -22,7 +22,7 @@ namespace XeLib.ShadowBoot
         public uint smcSize; // 0x78
         public uint smcOffset; // 0x7d
 
-        public List<SXBootloader> bootloaders;
+        public List<Bootloader.Bootloader> bootloaders;
 
         public ShadowBootRom(Stream stream) {
             this.stream = stream;
@@ -49,21 +49,21 @@ namespace XeLib.ShadowBoot
 
             reader.Seek(bootloaderOffset, SeekOrigin.Begin);
 
-            bootloaders = new List<SXBootloader>();
+            bootloaders = new List<Bootloader.Bootloader>();
 
-            var sb = new SXBootloader(stream);
+            var sb = new Bootloader.Bootloader(stream);
             sb.Read();
             bootloaders.Add(sb);
 
-            var sc = new SXBootloader(stream);
+            var sc = new Bootloader.Bootloader(stream);
             sc.Read();
             bootloaders.Add(sc);
 
-            var sd = new SXBootloader(stream);
+            var sd = new Bootloader.Bootloader(stream);
             sd.Read();
             bootloaders.Add(sd);
 
-            var se = new SXBootloader(stream);
+            var se = new Bootloader.Bootloader(stream);
             se.Read();
             bootloaders.Add(se);
         }

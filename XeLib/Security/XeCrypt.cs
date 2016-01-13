@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Security.Cryptography;
 
-namespace XeLib.Cryptography
+namespace XeLib.Security
 {
     public static class XeCrypt
     {

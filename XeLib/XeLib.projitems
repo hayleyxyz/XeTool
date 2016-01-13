@@ -9,8 +9,8 @@
     <Import_RootNamespace>XeLib</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Bootloader\SXBootloader.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Cryptography\XeCrypt.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bootloaders\Bootloader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Security\XeCrypt.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\Endian.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\XeReader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\XeWriter.cs" />
