@@ -24,10 +24,20 @@ namespace ShadowBoot {
 
             for(int i = 0; i < args.Length; i++) {
                 if(args[i] == "-i") {
+                    if ((args.Length - i) < 2) {
+                        PrintArgumentError();
+                        return;
+                    }
+
                     i++;
                     info.Add(args[i]);
                 }
                 else if(args[i] == "-x") {
+                    if((args.Length - i) < 4) {
+                        PrintArgumentError();
+                        return;
+                    }
+
                     var extractOp = new string[3];
                     Array.Copy(args, i + 1, extractOp, 0, 3);
                     extract.Add(extractOp);
@@ -35,8 +45,13 @@ namespace ShadowBoot {
                 }
             }
 
-            foreach(var file in info) {
-                PrintFileInfo(file);
+            try {
+                foreach (var file in info) {
+                    PrintFileInfo(file);
+                }
+            }
+            catch(FileNotFoundException exception) {
+
             }
 
             foreach(var extractOp in extract) {
@@ -95,37 +110,50 @@ namespace ShadowBoot {
             File.WriteAllBytes(String.Format("{0}\\{1}.bin", dir, rom.SE.GetMagicAsString()), rom.SE.data);
             #endregion
 
+            /*
             #region Decompress SE
             var seStream = new MemoryStream(rom.SE.data);
             var seReader = new XeReader(seStream);
 
-            seStream.Seek(0x30, SeekOrigin.Begin);
-            ushort packedSize = seReader.ReadUInt16();
-            uint unpackedSize = seReader.ReadUInt16();
-
-            var packedData = new byte[packedSize];
-            var unpackedData = new byte[unpackedSize];
-            seReader.Read(packedData, 0, packedSize);
-
             var context = new IntPtr();
             var result = LZX.LZX_Create(ref context);
-
-            if(result != 0) {
-                throw new LZXException();
-            }
-
-            result = LZX.LZX_Decompress(context, packedData, packedSize, unpackedData, ref unpackedSize);
 
             if (result != 0) {
                 throw new LZXException();
             }
 
+            seStream.Seek(0x30, SeekOrigin.Begin);
+
+            var outputStream = new MemoryStream();
+
+            while(seStream.Position < seStream.Length) {
+
+                ushort packedSize = seReader.ReadUInt16();
+                uint unpackedSize = seReader.ReadUInt16();
+
+                var packedData = new byte[packedSize];
+                var unpackedData = new byte[unpackedSize];
+                seReader.Read(packedData, 0, packedSize);
+
+            
+
+                result = LZX.LZX_Decompress(context, packedData, packedSize, unpackedData, ref unpackedSize);
+
+                if (result != 0) {
+                    throw new LZXException();
+                }
+
+
+                outputStream.Write(unpackedData, 0, (int)unpackedSize);
+            }
+
             LZX.LZX_Destroy(context);
 
-            File.WriteAllBytes("C:\\kernel.bin", unpackedData);
+            File.WriteAllBytes("C:\\kernel.bin", outputStream.ToArray());
 
             seStream.Close();
             #endregion
+            */
 
             #region SMC
             SMC.Decrypt(ref rom.SMC.data);
@@ -169,6 +197,11 @@ namespace ShadowBoot {
             Console.WriteLine("Options:");
             Console.WriteLine("\t-i <xbox rom .bin>                                             Print information about a shadowboot rom file.");
             Console.WriteLine("\t-x <d(ecrypted)|e(ncrypted)> <xbox rom .bin> <output dir>      Extract files from file.");
+        }
+
+        static void PrintArgumentError() {
+            Console.Error.WriteLine("ERROR: Invalid or missing arguments\n");
+            PrintHelp();
         }
     }
 }
