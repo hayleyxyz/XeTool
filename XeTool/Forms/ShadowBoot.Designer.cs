@@ -137,6 +137,7 @@
             // 
             // ShadowBoot
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 262);
@@ -152,6 +153,8 @@
             this.Menu = this.mainMenu1;
             this.Name = "ShadowBoot";
             this.Text = "ShadowBoot";
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.ShadowBoot_DragDrop);
+            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.ShadowBoot_DragEnter);
             this.ResumeLayout(false);
             this.PerformLayout();
 

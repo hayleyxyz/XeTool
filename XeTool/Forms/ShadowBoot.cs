@@ -19,6 +19,8 @@ namespace XeTool.Forms {
 
         protected ShadowBootRom rom;
 
+        protected string currentFile;
+
         public ShadowBoot() {
             InitializeComponent();
         }
@@ -32,6 +34,8 @@ namespace XeTool.Forms {
         }
 
         protected void loadFile(string file) {
+            currentFile = file;
+
             var stream = File.OpenRead(file);
             var reader = new XeReader(stream);
 
@@ -51,46 +55,82 @@ namespace XeTool.Forms {
         private void extractAllButton_Click(object sender, EventArgs e) {
             var fbd = new FolderBrowserDialog();
 
-            if(fbd.ShowDialog() == DialogResult.OK) {
+            fbd.SelectedPath = Directory.GetParent(currentFile).FullName;
+
+            if (fbd.ShowDialog() == DialogResult.OK) {
                 var dir = fbd.SelectedPath;
 
                 #region SB
                 Bootloader.Decrypt(ref rom.SB.data, StaticKeys.BL1_KEY); // SB
 
-                File.WriteAllBytes(String.Format("{0}\\{1}.bin", dir, rom.SB.GetMagicAsString()), rom.SB.data);
+                File.WriteAllBytes(String.Format("{0}\\{1}.{2}.bin", dir, rom.SB.GetMagicAsString(), rom.SB.version), rom.SB.data);
                 #endregion
 
                 #region SC
                 byte[] scDigest = new byte[0x10];
                 Bootloader.Decrypt(ref rom.SC.data, new byte[0x10], ref scDigest); // SC
 
-                File.WriteAllBytes(String.Format("{0}\\{1}.bin", dir, rom.SC.GetMagicAsString()), rom.SC.data);
+                File.WriteAllBytes(String.Format("{0}\\{1}.{2}.bin", dir, rom.SC.GetMagicAsString(), rom.SC.version), rom.SC.data);
                 #endregion
 
                 #region SD
                 byte[] sdDigest = new byte[0x10];
                 Bootloader.Decrypt(ref rom.SD.data, scDigest, ref sdDigest); // SD
 
-                File.WriteAllBytes(String.Format("{0}\\{1}.bin", dir, rom.SD.GetMagicAsString()), rom.SD.data);
+                File.WriteAllBytes(String.Format("{0}\\{1}.{2}.bin", dir, rom.SD.GetMagicAsString(), rom.SD.version), rom.SD.data);
                 #endregion
 
                 #region SE
                 Bootloader.Decrypt(ref rom.SE.data, sdDigest); // SE
 
-                File.WriteAllBytes(String.Format("{0}\\{1}.bin", dir, rom.SE.GetMagicAsString()), rom.SE.data);
+                //rom.SE.data[0x4c] = (byte)~rom.SE.data[0x4c];
+
+                var decryptedSe = new byte[rom.SE.data.Length];
+                Buffer.BlockCopy(rom.SE.data,0 , decryptedSe, 0, decryptedSe.Length);
+
+                File.WriteAllBytes(String.Format("{0}\\{1}.{2}.bin", dir, rom.SE.GetMagicAsString(), rom.SE.version), rom.SE.data);
+
+                Bootloader.Decrypt(ref rom.SE.data, sdDigest); // SE
+
+                File.WriteAllBytes(String.Format("{0}\\{1}.{2}.enc.bin", dir, rom.SE.GetMagicAsString(), rom.SE.version), rom.SE.data);
                 #endregion
 
                 #region Kernel/HV
-                var output = File.OpenWrite(String.Format("{0}\\xboxkrnl.bin", dir));
-                var input = new MemoryStream(rom.SE.data);
+                var kernelFile = String.Format("{0}\\xboxkrnl.exe", dir);
+                var output = File.Open(kernelFile, FileMode.Create);
+                var input = new MemoryStream(decryptedSe);
 
                 input.Seek(0x30, SeekOrigin.Begin);
 
                 var lzx = new LZX();
                 lzx.DecompressContinuous(input, output);
 
+                output.Seek(0, SeekOrigin.Begin);
+                var hv = new XeLib.Binaries.Hypervisor();
+                hv.Read(new XeReader(output));
+
                 output.Close();
+
+                var kernelFileWithVersion = String.Format("{0}\\xboxkrnld.{1}.exe", dir, hv.version);
+
+                if(File.Exists(kernelFileWithVersion)) {
+                    File.Delete(kernelFileWithVersion);
+                }
+
+                File.Move(kernelFile, kernelFileWithVersion);
                 #endregion
+            }
+        }
+
+        private void ShadowBoot_DragEnter(object sender, DragEventArgs e) {
+            e.Effect = DragDropEffects.Copy;
+        }
+
+        private void ShadowBoot_DragDrop(object sender, DragEventArgs e) {
+            var files = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+
+            if(files.Length > 0) {
+                loadFile(files[0]);
             }
         }
     }
