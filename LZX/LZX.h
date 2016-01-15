@@ -20,13 +20,13 @@ typedef struct _LZX_DECOMPRESS {
 extern "C" {
 
 	DWORD LDICreateDecompression(
-		LPDWORD pcbDataBlockMax, // Max size of src blocks
+		LPDWORD pcbDataBlockMax,
 		LPLZX_DECOMPRESS pvConfiguration,
 		LPVOID pfnma,
 		LPVOID pfnmf,
-		LPDWORD pcbDstBufferMin, // Minimum size of dst buffer when calling decompress
+		LPVOID pcbSrcBufferMin,
 		LPVOID* ppContext,
-		LPVOID unknown
+		LPDWORD pcbDecompressed
 	);
 	
 	DWORD LDIDecompress(
@@ -37,22 +37,20 @@ extern "C" {
 		LPDWORD pcbDecompressed
 	);
 	
-	DWORD LDIDestroyDecompression(
-		LPVOID context
-	);
+	DWORD LDIDestroyDecompression(LPVOID context);
 
-	FNALLOC(mem_alloc) {
+	FNALLOC(Kmem_alloc) {
 		return malloc(cb);
 	}
 
-	FNFREE(mem_free) {
+	FNFREE(Kmem_free) {
 		free(pv);
 	}
 
 }
 
 extern "C" {
-	LZX_API DWORD LZX_CreateDecompression(LPVOID*, DWORD);
+	LZX_API DWORD LZX_Create(LPVOID*);
 	LZX_API DWORD LZX_Decompress(LPVOID, LPBYTE, WORD, LPBYTE, LPDWORD);
-	LZX_API DWORD LZX_DestroyDecompression(LPVOID);
+	LZX_API DWORD LZX_Destroy(LPVOID);
 }
