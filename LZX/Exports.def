@@ -1,0 +1,5 @@
+LIBRARY
+EXPORTS
+FCICreate
+FCIAddFile
+FCIFlushCabinet
