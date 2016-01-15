@@ -7,11 +7,6 @@
 
 int main()
 {
-	LPVOID instance = NULL;
-	DWORD result = LZX_Create(&instance);
-	printf("0x%08x\n", result);
-	
-	
 	WORD packedSize = 0;
 	WORD unpackedSize = 0;
 	DWORD unpackedSizeDw = 0;
@@ -37,18 +32,19 @@ int main()
 		fclose(fh);
 
 		LPVOID context = NULL;
-		LZX_Create(&context);
+		DWORD result = LZX_CreateDecompression(&context, 0x8000);
+		printf("LZX_CreateDecompression() - 0x%08x\n", result);
 
-		LZX_Decompress(context, compressed, packedSize, decompressed, &unpackedSizeDw);
+		result: LZX_Decompress(context, compressed, packedSize, decompressed, &unpackedSizeDw);
+		printf("LZX_Decompress() - 0x%08x\n", result);
 
-		LZX_Destroy(context);
+		result = LZX_DestroyDecompression(context);
+		printf("LZX_DestroyDecompression() - 0x%08x\n", result);
 	}
 	else {
 		__debugbreak();
 	}
 
-	result = LZX_Destroy(instance);
-	printf("0x%08x\n", result);
     return 0;
 }
 
