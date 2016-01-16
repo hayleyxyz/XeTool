@@ -5,6 +5,7 @@ using System.IO;
 using XeLib.IO;
 using XeLib.Utilities;
 using XeLib.Security;
+using XeLib.Compression;
 
 namespace XeLib.Bootloaders
 {
@@ -15,10 +16,12 @@ namespace XeLib.Bootloaders
 
         public ushort magic; // 0x00
         public ushort version; // 0x02
+        public ushort unkWord1; // 0x04
+        public ushort unkWord2; // 0x06
         public uint entryPoint; // 0x08
         public uint length; // 0x0c
 
-        public byte[] data;
+        public byte[] hmacSalt;
 
         public CXBootloader(Stream stream) {
             this.Stream = stream;
@@ -42,13 +45,15 @@ namespace XeLib.Bootloaders
             // Parse info bits
             magic = BufferUtils.ToUInt16(header, 0x00);
             version = BufferUtils.ToUInt16(header, 0x02);
+            unkWord1 = BufferUtils.ToUInt16(header, 0x04);
+            unkWord2 = BufferUtils.ToUInt16(header, 0x06);
             entryPoint = BufferUtils.ToUInt32(header, 0x08);
             length = BufferUtils.ToUInt32(header, 0x0c);
 
-            // Read entire BL
-            data = new byte[length];
-            reader.Seek(Origin, SeekOrigin.Begin);
-            reader.Read(data, 0, (int)length);
+            hmacSalt = new byte[0x10];
+            reader.Read(hmacSalt, 0, 0x10);
+
+            reader.Seek(Origin + length, SeekOrigin.Begin);
         }
 
         public void Decrypt(Stream output, byte[] key) {
@@ -83,9 +88,7 @@ namespace XeLib.Bootloaders
         public byte[] GetDigestKey(byte[] key) {
             Stream.Seek(Origin + 0x10, SeekOrigin.Begin);
 
-            var salt = new byte[0x10];
-            Stream.Read(salt, 0, 0x10);
-            var hash = XeCrypt.XeCryptHmacSha(key, salt, 0, 0x10);
+            var hash = XeCrypt.XeCryptHmacSha(key, hmacSalt, 0, 0x10);
 
             Array.Resize(ref hash, 0x10);
 

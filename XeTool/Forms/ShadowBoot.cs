@@ -45,8 +45,8 @@ namespace XeTool.Forms {
             bl4Version.Text = rom.SD.version.ToString();
             bl5Version.Text = rom.SE.version.ToString();
 
-            extractAllButton.Enabled =
-                extractKernelButton.Enabled = true;
+            extractAllButton.Enabled = 
+                replaceKernelButton.Enabled = true;
         }
 
         private void extractAllButton_Click(object sender, EventArgs e) {
@@ -74,6 +74,10 @@ namespace XeTool.Forms {
                 fs = File.Create(String.Format("{0}\\{1}", fbd.SelectedPath, rom.SE.GetFileName()));
                 rom.SE.Decrypt(fs, bl4Key);
                 fs.Close();
+
+                fs = File.Create(String.Format("{0}\\{1}", dir, rom.SE.GetKernelFileName()));
+                rom.SE.ExtractKernel(fs, bl4Key);
+                fs.Close();
             }
         }
 
@@ -89,22 +93,57 @@ namespace XeTool.Forms {
             }
         }
 
-        private void extractKernelButton_Click(object sender, EventArgs e) {
-            var fbd = new FolderBrowserDialog() {
-                SelectedPath = Directory.GetParent(currentFile).FullName
-            };
+        private void replaceKernelButton_Click(object sender, EventArgs e) {
+            var ofd = new OpenFileDialog();
+            var sfd = new SaveFileDialog();
 
-            if (fbd.ShowDialog() == DialogResult.OK) {
-                var dir = fbd.SelectedPath;
-                   
+            if (ofd.ShowDialog() == DialogResult.OK && sfd.ShowDialog() == DialogResult.OK) {
+                var inputStream = File.OpenRead(ofd.FileName);
+                var outputStream = File.Create(sfd.FileName);
+                var writer = new XeWriter(outputStream);
+
+                var lzx = new LzxCompression();
+
+                byte[] compressedBuffer = new byte[0x8000 + 0x1800];
+                byte[] uncompressedBuffer = new byte[0x8000];
+
+                while (inputStream.Position < inputStream.Length) {
+                    int blockSize = 0x8000;
+                    int remaining = (int)(inputStream.Length - inputStream.Position);
+
+                    if(remaining < blockSize) {
+                        throw new NotImplementedException();
+                    }
+
+                    inputStream.Read(uncompressedBuffer, 0, blockSize);
+
+                    int compressedSize = lzx.CompressSingle(uncompressedBuffer, blockSize, ref compressedBuffer, compressedBuffer.Length);
+
+                    writer.WriteUInt16((ushort)compressedSize);
+                    writer.WriteUInt16((ushort)blockSize);
+                    writer.Write(compressedBuffer, 0, compressedSize);
+                }
+
+                inputStream.Close();
+                outputStream.Close();
+            }
+        }
+
+        private void encrypt5blButton_Click(object sender, EventArgs e) {
+            var ofd = new OpenFileDialog();
+            var sfd = new SaveFileDialog();
+
+            if (ofd.ShowDialog() == DialogResult.OK && sfd.ShowDialog() == DialogResult.OK) {
+                var inputStream = File.OpenRead(ofd.FileName);
+                var outputStream = File.Create(sfd.FileName);
+
                 var key1 = rom.SC.GetDigestKey(new byte[0x10]);
                 var key2 = rom.SD.GetDigestKey(key1);
 
-                var stream = File.Create(String.Format("{0}\\{1}", dir, rom.SE.GetKernelFileName()));
+                
 
-                rom.SE.ExtractKernel(stream, key2);
-
-                stream.Close();
+                inputStream.Close();
+                outputStream.Close();
             }
         }
     }

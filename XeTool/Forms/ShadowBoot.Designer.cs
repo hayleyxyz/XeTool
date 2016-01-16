@@ -36,7 +36,8 @@
             this.bl5Version = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.extractAllButton = new System.Windows.Forms.Button();
-            this.extractKernelButton = new System.Windows.Forms.Button();
+            this.replaceKernelButton = new System.Windows.Forms.Button();
+            this.encrypt5blButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // mainMenu1
@@ -136,16 +137,27 @@
             this.extractAllButton.UseVisualStyleBackColor = true;
             this.extractAllButton.Click += new System.EventHandler(this.extractAllButton_Click);
             // 
-            // extractKernelButton
+            // replaceKernelButton
             // 
-            this.extractKernelButton.Enabled = false;
-            this.extractKernelButton.Location = new System.Drawing.Point(130, 167);
-            this.extractKernelButton.Name = "extractKernelButton";
-            this.extractKernelButton.Size = new System.Drawing.Size(88, 23);
-            this.extractKernelButton.TabIndex = 9;
-            this.extractKernelButton.Text = "Extract kernel";
-            this.extractKernelButton.UseVisualStyleBackColor = true;
-            this.extractKernelButton.Click += new System.EventHandler(this.extractKernelButton_Click);
+            this.replaceKernelButton.Enabled = false;
+            this.replaceKernelButton.Location = new System.Drawing.Point(96, 227);
+            this.replaceKernelButton.Name = "replaceKernelButton";
+            this.replaceKernelButton.Size = new System.Drawing.Size(75, 23);
+            this.replaceKernelButton.TabIndex = 9;
+            this.replaceKernelButton.Text = "Replace kernel";
+            this.replaceKernelButton.UseVisualStyleBackColor = true;
+            this.replaceKernelButton.Click += new System.EventHandler(this.replaceKernelButton_Click);
+            // 
+            // encrypt5blButton
+            // 
+            this.encrypt5blButton.Enabled = false;
+            this.encrypt5blButton.Location = new System.Drawing.Point(130, 167);
+            this.encrypt5blButton.Name = "encrypt5blButton";
+            this.encrypt5blButton.Size = new System.Drawing.Size(75, 23);
+            this.encrypt5blButton.TabIndex = 10;
+            this.encrypt5blButton.Text = "Encrypt 5BL";
+            this.encrypt5blButton.UseVisualStyleBackColor = true;
+            this.encrypt5blButton.Click += new System.EventHandler(this.encrypt5blButton_Click);
             // 
             // ShadowBoot
             // 
@@ -153,7 +165,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 262);
-            this.Controls.Add(this.extractKernelButton);
+            this.Controls.Add(this.encrypt5blButton);
+            this.Controls.Add(this.replaceKernelButton);
             this.Controls.Add(this.extractAllButton);
             this.Controls.Add(this.bl5Version);
             this.Controls.Add(this.label4);
@@ -187,6 +200,7 @@
         private System.Windows.Forms.TextBox bl5Version;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button extractAllButton;
-        private System.Windows.Forms.Button extractKernelButton;
+        private System.Windows.Forms.Button replaceKernelButton;
+        private System.Windows.Forms.Button encrypt5blButton;
     }
 }

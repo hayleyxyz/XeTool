@@ -23,7 +23,9 @@ namespace XeLib.Compression
         }
 
         ~LzxDecompression() {
-            uint result = LzxNativeMethods.LDIDestroyDecompression(context);
+            if(context != null) {
+                uint result = LzxNativeMethods.LDIDestroyDecompression(context);
+            }
         }
 
         public int DecompressSingle(byte[] input, int inputLength, ref byte[] output, int outputLength) {
@@ -46,7 +48,7 @@ namespace XeLib.Compression
                 var uncompressedLength = BufferUtils.ToUInt16(sizes, 2);
 
                 if ((input.Position + compressedLength) > input.Length) {
-                    throw new LZXException("Data is corrupt.");
+                    throw new Exception("Data is corrupt.");
                 }
 
                 if (compressedBuffer == null) {

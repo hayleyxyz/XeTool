@@ -14,7 +14,7 @@ namespace XeLib.IO
 
         public XeReader(Stream stream) {
             Stream = stream;
-            internalBuffer = new byte[4];
+            internalBuffer = new byte[8];
         }
 
         public long Seek(long offset, SeekOrigin origin) {

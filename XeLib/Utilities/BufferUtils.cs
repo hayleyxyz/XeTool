@@ -44,7 +44,6 @@ namespace XeLib.Utilities
         }
 
         public static short ToInt16(byte[] buffer, int startIndex = 0, Endian endian = Endian.Big) {
-
             if(endian == Endian.Little) {
                 return (short)(buffer[startIndex + 1] << 8 |
                     buffer[startIndex + 0]);
@@ -56,7 +55,6 @@ namespace XeLib.Utilities
         }
 
         public static ushort ToUInt16(byte[] buffer, int startIndex = 0, Endian endian = Endian.Big) {
-
             if (endian == Endian.Little) {
                 return (ushort)(buffer[startIndex + 1] << 8 |
                     buffer[startIndex + 0]);
@@ -77,12 +75,27 @@ namespace XeLib.Utilities
 
         public static void FromUInt16(ushort value, byte[] buffer, int startIndex = 0, Endian endian = Endian.Big) {
             if(endian == Endian.Little) {
-                buffer[1] = (byte)((value >> 8) & 0xff);
-                buffer[0] = (byte)(value & 0xff);
+                buffer[startIndex + 1] = (byte)((value >> 8) & 0xff);
+                buffer[startIndex + 0] = (byte)(value & 0xff);
             }
             else {
-                buffer[0] = (byte)((value >> 8) & 0xff);
-                buffer[1] = (byte)(value & 0xff);
+                buffer[startIndex + 0] = (byte)((value >> 8) & 0xff);
+                buffer[startIndex + 1] = (byte)(value & 0xff);
+            }
+        }
+
+        public static void FromUInt32(uint value, byte[] buffer, int startIndex = 0, Endian endian = Endian.Big) {
+            if (endian == Endian.Little) {
+                buffer[startIndex + 3] = (byte)((value >> 24) & 0xff);
+                buffer[startIndex + 2] = (byte)((value >> 16) & 0xff);
+                buffer[startIndex + 1] = (byte)((value >> 8) & 0xff);
+                buffer[startIndex + 0] = (byte)(value & 0xff);
+            }
+            else {
+                buffer[startIndex + 0] = (byte)((value >> 24) & 0xff);
+                buffer[startIndex + 1] = (byte)((value >> 16) & 0xff);
+                buffer[startIndex + 2] = (byte)((value >> 8) & 0xff);
+                buffer[startIndex + 3] = (byte)(value & 0xff);
             }
         }
     }

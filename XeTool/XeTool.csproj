@@ -80,6 +80,12 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XeLibNative\XeLibNative.vcxproj">
+      <Project>{71dc637d-5fce-430f-81cb-17da6fbeef0e}</Project>
+      <Name>XeLibNative</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="..\XeLib\XeLib.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
