@@ -26,7 +26,7 @@ namespace XeLib.ShadowBoot
         public CXBootloader SB;
         public CXBootloader SC;
         public CXBootloader SD;
-        public CXBootloader SE;
+        public CEBootloader SE;
 
         public ShadowBootRom(Stream stream) {
             Stream = stream;

@@ -45,11 +45,17 @@ namespace XeLib.Compression
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void pfnlzx_output_callback(IntPtr fci_data, byte* pbCompressed, uint cbCompressed, uint cbDecompressed);
 
-        public static IntPtr mem_alloc(uint cb) {
+        [DllImport("XeLibNative.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr mem_alloc(uint cb);
+
+        [DllImport("XeLibNative.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void mem_free(IntPtr pv);
+
+        public static IntPtr managed_mem_alloc(uint cb) {
             return mem_alloc(cb);
         }
 
-        public static void mem_free(IntPtr pv) {
+        public static void managed_mem_free(IntPtr pv) {
             mem_free(pv);
         }
         #endregion

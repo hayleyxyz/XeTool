@@ -52,6 +52,11 @@ namespace XeLib.Bootloaders
         }
 
         public void Decrypt(Stream output, byte[] key) {
+            byte[] digest;
+            Decrypt(output, key, out digest);
+        }
+
+        public void Decrypt(Stream output, byte[] key, out byte[] digest) {
             Stream.Seek(Origin, SeekOrigin.Begin);
 
             byte[] header = new byte[0x20];
@@ -65,29 +70,14 @@ namespace XeLib.Bootloaders
 
             Array.Resize(ref hash, 0x10);
 
+            digest = new byte[0x10];
+            Buffer.BlockCopy(hash, 0, digest, 0, 0x10);
+
             // Decrypt the data
             var rc4 = XeCrypt.XeCryptRc4Key(hash);
             XeCrypt.XeCryptRc4Ecb(rc4, ref data, 0, data.Length);
 
             output.Write(data, 0, data.Length);
-        }
-
-        public static void Decrypt(ref byte[] inOut, byte[] hmacKey, ref byte[] digest) {
-            // Hash 0x10 bytes starting at 0x10
-            var hash = XeCrypt.XeCryptHmacSha(hmacKey, inOut, 0x10, 0x10);
-
-            // Copy resulting digest to parameter for use in decrpyting next BL 
-            if (digest != null) {
-                Buffer.BlockCopy(hash, 0, digest, 0, 0x10);
-            }
-
-            // We only need the first 0x10 bytes of the resulting hash
-            var rc4Key = new byte[0x10];
-            Buffer.BlockCopy(hash, 0, rc4Key, 0, 0x10);
-
-            // Decrypt the data
-            var rc4 = XeCrypt.XeCryptRc4Key(rc4Key);
-            XeCrypt.XeCryptRc4Ecb(rc4, ref inOut, 0x20, inOut.Length - 0x20);
         }
 
         public byte[] GetDigestKey(byte[] key) {
@@ -106,6 +96,10 @@ namespace XeLib.Bootloaders
             var buf = new byte[2];
             BufferUtils.FromUInt16(magic, buf);
             return Encoding.ASCII.GetString(buf);
+        }
+
+        public string GetFileName() {
+            return String.Format("{0}.{1}.bin", GetName(), this.version);
         }
     }
 }

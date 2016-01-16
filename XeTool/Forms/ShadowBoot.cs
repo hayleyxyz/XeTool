@@ -57,54 +57,23 @@ namespace XeTool.Forms {
             if (fbd.ShowDialog() == DialogResult.OK) {
                 var dir = fbd.SelectedPath;
 
-#region SB
-                //CXBootloader.Decrypt(ref rom.SB.data, StaticKeys.BL1_KEY); // SB
+                var fs = File.Create(String.Format("{0}\\{1}", fbd.SelectedPath, rom.SB.GetFileName()));
+                rom.SB.Decrypt(fs, StaticKeys.BL1_KEY);
+                fs.Close();
 
-                File.WriteAllBytes(String.Format("{0}\\{1}.{2}.bin", dir, rom.SB.GetName(), rom.SB.version), rom.SB.data);
-#endregion
+                fs = File.Create(String.Format("{0}\\{1}", fbd.SelectedPath, rom.SC.GetFileName()));
+                byte[] bl3Key;
+                rom.SC.Decrypt(fs, new byte[0x10], out bl3Key);
+                fs.Close();
 
-#region SC
-                byte[] scDigest = new byte[0x10];
-                CXBootloader.Decrypt(ref rom.SC.data, new byte[0x10], ref scDigest); // SC
-                System.Diagnostics.Debug.Print("SC: {0}", BitConverter.ToString(scDigest));
-                File.WriteAllBytes(String.Format("{0}\\{1}.{2}.bin", dir, rom.SC.GetName(), rom.SC.version), rom.SC.data);
-#endregion
+                fs = File.Create(String.Format("{0}\\{1}", fbd.SelectedPath, rom.SD.GetFileName()));
+                byte[] bl4Key;
+                rom.SD.Decrypt(fs, bl3Key, out bl4Key);
+                fs.Close();
 
-#region SD
-                byte[] sdDigest = new byte[0x10];
-                CXBootloader.Decrypt(ref rom.SD.data, scDigest, ref sdDigest); // SD
-                System.Diagnostics.Debug.Print("SD: {0}", BitConverter.ToString(sdDigest));
-                File.WriteAllBytes(String.Format("{0}\\{1}.{2}.bin", dir, rom.SD.GetName(), rom.SD.version), rom.SD.data);
-                #endregion
-
-                #region SE
-                var seDigest = new byte[0x10];
-                CXBootloader.Decrypt(ref rom.SE.data, sdDigest, ref seDigest); // SE
-                System.Diagnostics.Debug.Print("SE: {0}", BitConverter.ToString(seDigest));
-                //rom.SE.data[0x4c] = (byte)~rom.SE.data[0x4c];
-
-                var decryptedSe = new byte[rom.SE.data.Length];
-                Buffer.BlockCopy(rom.SE.data,0 , decryptedSe, 0, decryptedSe.Length);
-
-                File.WriteAllBytes(String.Format("{0}\\{1}.{2}.bin", dir, rom.SE.GetName(), rom.SE.version), rom.SE.data);
-
-                
-                //CXBootloader.Decrypt(ref rom.SE.data, sdDigest, ref seDigest); // SE
-
-                //File.WriteAllBytes(String.Format("{0}\\{1}.{2}.enc.bin", dir, rom.SE.GetName(), rom.SE.version), rom.SE.data);
-#endregion
-
-#region Kernel/HV
-                var kernelFile = String.Format("{0}\\xboxkrnl.exe", dir);
-                var output = File.Open(kernelFile, FileMode.Create);
-                var input = new MemoryStream(decryptedSe);
-
-                input.Seek(0x30, SeekOrigin.Begin);
-
-                var lzx = new LZX();
-                lzx.DecompressContinuous(input, output);
-                output.Close();
-#endregion
+                fs = File.Create(String.Format("{0}\\{1}", fbd.SelectedPath, rom.SE.GetFileName()));
+                rom.SE.Decrypt(fs, bl4Key);
+                fs.Close();
             }
         }
 
@@ -131,15 +100,11 @@ namespace XeTool.Forms {
                 var key1 = rom.SC.GetDigestKey(new byte[0x10]);
                 var key2 = rom.SD.GetDigestKey(key1);
 
-                System.Diagnostics.Debug.Print("key1: {0}", BitConverter.ToString(key1));
-                System.Diagnostics.Debug.Print("key2: {0}", BitConverter.ToString(key2));
+                var stream = File.Create(String.Format("{0}\\{1}", dir, rom.SE.GetKernelFileName()));
 
-                var ms = new MemoryStream();
-                rom.SE.Decrypt(ms, key2);
+                rom.SE.ExtractKernel(stream, key2);
 
-                File.WriteAllBytes(String.Format("{0}\\{1}.{2}.bin", dir, rom.SE.GetName(), rom.SE.version), ms.ToArray());
-
-                ms.Close();
+                stream.Close();
             }
         }
     }
