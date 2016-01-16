@@ -9,10 +9,14 @@
     <Import_RootNamespace>XeLib</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Bootloaders\Bootloader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bootloaders\CXBootloader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bootloaders\CEBootloader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bootloaders\SMC.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Compression\LZX.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Compression\LzxCompression.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Compression\LzxDecompression.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Compression\LZXException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Compression\LzxNativeMethods.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Security\StaticKeys.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Security\XeCrypt.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\Endian.cs" />

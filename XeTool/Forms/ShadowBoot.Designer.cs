@@ -36,6 +36,7 @@
             this.bl5Version = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.extractAllButton = new System.Windows.Forms.Button();
+            this.extractKernelButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // mainMenu1
@@ -135,12 +136,24 @@
             this.extractAllButton.UseVisualStyleBackColor = true;
             this.extractAllButton.Click += new System.EventHandler(this.extractAllButton_Click);
             // 
+            // extractKernelButton
+            // 
+            this.extractKernelButton.Enabled = false;
+            this.extractKernelButton.Location = new System.Drawing.Point(130, 167);
+            this.extractKernelButton.Name = "extractKernelButton";
+            this.extractKernelButton.Size = new System.Drawing.Size(88, 23);
+            this.extractKernelButton.TabIndex = 9;
+            this.extractKernelButton.Text = "Extract kernel";
+            this.extractKernelButton.UseVisualStyleBackColor = true;
+            this.extractKernelButton.Click += new System.EventHandler(this.extractKernelButton_Click);
+            // 
             // ShadowBoot
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 262);
+            this.Controls.Add(this.extractKernelButton);
             this.Controls.Add(this.extractAllButton);
             this.Controls.Add(this.bl5Version);
             this.Controls.Add(this.label4);
@@ -174,5 +187,6 @@
         private System.Windows.Forms.TextBox bl5Version;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button extractAllButton;
+        private System.Windows.Forms.Button extractKernelButton;
     }
 }

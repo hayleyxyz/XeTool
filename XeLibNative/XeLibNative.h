@@ -68,3 +68,11 @@ extern "C" {
 		LPVOID hmd
 	);
 }
+
+LPVOID __cdecl mem_alloc(DWORD cb) {
+	return malloc(cb);
+}
+
+VOID __cdecl mem_free(void* pv) {
+	free(pv);
+}

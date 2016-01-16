@@ -10,6 +10,8 @@ namespace XeLib.ShadowBoot
 {
     public class ShadowBootRom
     {
+        public Stream Stream { get; protected set; }
+
         public ushort magic; // 0x00
         public ushort version; // 0x02
         public uint bootloaderOffset; // 0x08
@@ -21,10 +23,20 @@ namespace XeLib.ShadowBoot
 
         public SMC SMC;
 
-        public Bootloader SB;
-        public Bootloader SC;
-        public Bootloader SD;
-        public Bootloader SE;
+        public CXBootloader SB;
+        public CXBootloader SC;
+        public CXBootloader SD;
+        public CXBootloader SE;
+
+        public ShadowBootRom(Stream stream) {
+            Stream = stream;
+            Read();
+        }
+
+        public void Read() {
+            var reader = new XeReader(Stream);
+            Read(reader);
+        }
 
         public void Read(XeReader reader) {
             reader.Seek(0, SeekOrigin.Begin);
@@ -50,17 +62,13 @@ namespace XeLib.ShadowBoot
 
             reader.Seek(bootloaderOffset, SeekOrigin.Begin);
 
-            SB = new Bootloader();
-            SB.Read(reader);
+            SB = new CXBootloader(Stream);
 
-            SC = new Bootloader();
-            SC.Read(reader);
+            SC = new CXBootloader(Stream);
 
-            SD = new Bootloader();
-            SD.Read(reader);
+            SD = new CXBootloader(Stream);
 
-            SE = new Bootloader();
-            SE.Read(reader);
+            SE = new CEBootloader(Stream);
         }
 
     }
