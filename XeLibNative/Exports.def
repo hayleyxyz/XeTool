@@ -1,0 +1,11 @@
+LIBRARY
+EXPORTS
+mem_alloc
+mem_free
+LCICreateCompression
+LCICompress
+LCIFlushCompressorOutput
+LCIDestroyCompression
+LDICreateDecompression
+LDIDecompress
+LDIDestroyDecompression

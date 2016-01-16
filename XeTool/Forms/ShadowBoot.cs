@@ -104,20 +104,7 @@ namespace XeTool.Forms {
 
                 var lzx = new LZX();
                 lzx.DecompressContinuous(input, output);
-
-                output.Seek(0, SeekOrigin.Begin);
-                var hv = new XeLib.Binaries.Hypervisor();
-                hv.Read(new XeReader(output));
-
                 output.Close();
-
-                var kernelFileWithVersion = String.Format("{0}\\xboxkrnld.{1}.exe", dir, hv.version);
-
-                if(File.Exists(kernelFileWithVersion)) {
-                    File.Delete(kernelFileWithVersion);
-                }
-
-                File.Move(kernelFile, kernelFileWithVersion);
                 #endregion
             }
         }
