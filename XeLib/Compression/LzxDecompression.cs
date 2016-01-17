@@ -19,7 +19,7 @@ namespace XeLib.Compression
 
             context = IntPtr.Zero;
 
-            uint result = LzxNativeMethods.LDICreateDecompression(out dataBlockMax, &config, LzxNativeMethods.managed_mem_alloc, LzxNativeMethods.managed_mem_free, out decompressBufferMin, out context, IntPtr.Zero);
+            uint result = LzxNativeMethods.LDICreateDecompression(out dataBlockMax, &config, LzxNativeMethods.managed_mem_alloc, LzxNativeMethods.managed_mem_free, IntPtr.Zero, out decompressBufferMin, out context);
         }
 
         ~LzxDecompression() {

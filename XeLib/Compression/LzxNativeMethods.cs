@@ -26,9 +26,9 @@ namespace XeLib.Compression
 
         #region Decompression
         [DllImport("XeLibNative.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern uint LDICreateDecompression(out uint pcbDataBlockMax, LZX_CONFIGURATION* pvConfiguration, pfnma pfnma, pfnmf pfnmf, out uint pcbSrcBufferMin, out IntPtr pmchHandle, IntPtr pcbDecompressed);
+        public static extern uint LDICreateDecompression(out uint pcbDataBlockMax, LZX_CONFIGURATION* pvConfiguration, pfnma pfnma, pfnmf pfnmf, IntPtr pvmem, out uint pcbSrcBufferMin, out IntPtr pmchHandle);
 
-        [DllImport("XeLibNative.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "LDIDecompress")]
+        [DllImport("XeLibNative.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "LDIDecompress2")]
         public static extern uint LDIDecompress(IntPtr hmc, byte[] pbSrc, uint cbSrc, byte[] pbDst, out uint pcbResult);
 
         [DllImport("XeLibNative.dll", CallingConvention = CallingConvention.Cdecl)]

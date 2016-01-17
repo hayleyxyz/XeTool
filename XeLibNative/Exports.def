@@ -9,3 +9,4 @@ LCIDestroyCompression
 LDICreateDecompression
 LDIDecompress
 LDIDestroyDecompression
+LDIDecompress2
