@@ -56,6 +56,30 @@ namespace XeLib.Bootloaders
             reader.Seek(Origin + length, SeekOrigin.Begin);
         }
 
+        public static void EncryptDecrypt(Stream input, Stream output, byte[] key, out byte[] digest) {
+            byte[] header = new byte[0x20];
+            input.Read(header, 0, 0x20);
+            output.Write(header, 0, 0x20);
+
+            var length = BufferUtils.ToUInt32(header, 0x0c);
+
+            var data = new byte[length - 0x20];
+            input.Read(data, 0, data.Length);
+
+            var hash = XeCrypt.XeCryptHmacSha(key, header, 0x10, 0x10);
+
+            Array.Resize(ref hash, 0x10);
+
+            digest = new byte[0x10];
+            Buffer.BlockCopy(hash, 0, digest, 0, 0x10);
+
+            // Decrypt the data
+            var rc4 = XeCrypt.XeCryptRc4Key(hash);
+            XeCrypt.XeCryptRc4Ecb(rc4, ref data, 0, data.Length);
+
+            output.Write(data, 0, data.Length);
+        }
+
         public void Decrypt(Stream output, byte[] key) {
             byte[] digest;
             Decrypt(output, key, out digest);

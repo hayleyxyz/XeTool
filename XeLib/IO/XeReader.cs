@@ -10,6 +10,8 @@ namespace XeLib.IO
     {
         public Stream Stream { get; protected set; }
 
+        public long Length { get { return Stream.Length; } }
+
         protected byte[] internalBuffer;
 
         public XeReader(Stream stream) {

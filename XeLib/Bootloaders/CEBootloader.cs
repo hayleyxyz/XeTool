@@ -32,18 +32,22 @@ namespace XeLib.Bootloaders
             writer.WriteUInt16(unkWord1);
             writer.WriteUInt16(unkWord2);
             writer.WriteUInt32(entryPoint);
-            writer.WriteUInt32(length);
+            writer.WriteUInt32(0xdeadbeef); // Will need to go back and update after compression
             writer.Write(hmacSalt, 0, 0x10);
 
+            var meta = new byte[0x10];
+            BufferUtils.FromUInt32((uint)kernel.Length, meta, 0x08);
+
+            writer.Write(meta, 0, 0x10);
+
             var compressedKernelStream = new MemoryStream();
-
             CompressKernel(kernel, compressedKernelStream);
-
-            writer.Write(new byte[0x10], 0, 0x10); // TEMPORARY, NEEDS CHANGING
-
+            compressedKernelStream.Seek(0, SeekOrigin.Begin);
             compressedKernelStream.CopyTo(output);
-
             compressedKernelStream.Close();
+
+            writer.Seek(0x0c, SeekOrigin.Begin);
+            writer.WriteUInt32((uint)writer.Length);
         }
 
         // Not sure if this compression method is used elsewhere so keep it here for now. Move to more common location if transpires it is used elsewhere.

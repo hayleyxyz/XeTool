@@ -8,11 +8,17 @@ namespace XeLib.IO
     {
         public Stream Stream { get; protected set; }
 
+        public long Length { get { return Stream.Length; } }
+
         protected byte[] internalBuffer;
 
         public XeWriter(Stream stream) {
             Stream = stream;
             internalBuffer = new byte[8];
+        }
+
+        public long Seek(long offset, SeekOrigin origin) {
+            return Stream.Seek(offset, origin);
         }
 
         public void WriteUInt32(uint value, Endian endian = Endian.Big) {

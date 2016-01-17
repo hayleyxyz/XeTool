@@ -50,32 +50,34 @@ namespace XeTool.Forms {
         }
 
         private void extractAllButton_Click(object sender, EventArgs e) {
-            var fbd = new FolderBrowserDialog();
+            var fbd = new FolderBrowserDialog() {
+                SelectedPath = Directory.GetParent(currentFile).FullName
+            };
 
-            fbd.SelectedPath = Directory.GetParent(currentFile).FullName;
+            var dstFileFormat = "{0}\\{1}";
 
             if (fbd.ShowDialog() == DialogResult.OK) {
                 var dir = fbd.SelectedPath;
 
-                var fs = File.Create(String.Format("{0}\\{1}", fbd.SelectedPath, rom.SB.GetFileName()));
+                var fs = File.Create(String.Format(dstFileFormat, fbd.SelectedPath, rom.SB.GetFileName()));
                 rom.SB.Decrypt(fs, StaticKeys.BL1_KEY);
                 fs.Close();
 
-                fs = File.Create(String.Format("{0}\\{1}", fbd.SelectedPath, rom.SC.GetFileName()));
+                fs = File.Create(String.Format(dstFileFormat, fbd.SelectedPath, rom.SC.GetFileName()));
                 byte[] bl3Key;
                 rom.SC.Decrypt(fs, new byte[0x10], out bl3Key);
                 fs.Close();
 
-                fs = File.Create(String.Format("{0}\\{1}", fbd.SelectedPath, rom.SD.GetFileName()));
+                fs = File.Create(String.Format(dstFileFormat, fbd.SelectedPath, rom.SD.GetFileName()));
                 byte[] bl4Key;
                 rom.SD.Decrypt(fs, bl3Key, out bl4Key);
                 fs.Close();
 
-                fs = File.Create(String.Format("{0}\\{1}", fbd.SelectedPath, rom.SE.GetFileName()));
+                fs = File.Create(String.Format(dstFileFormat, fbd.SelectedPath, rom.SE.GetFileName()));
                 rom.SE.Decrypt(fs, bl4Key);
                 fs.Close();
 
-                fs = File.Create(String.Format("{0}\\{1}", dir, rom.SE.GetKernelFileName()));
+                fs = File.Create(String.Format(dstFileFormat, dir, rom.SE.GetKernelFileName()));
                 rom.SE.ExtractKernel(fs, bl4Key);
                 fs.Close();
             }
@@ -95,54 +97,28 @@ namespace XeTool.Forms {
 
         private void replaceKernelButton_Click(object sender, EventArgs e) {
             var ofd = new OpenFileDialog();
-            var sfd = new SaveFileDialog();
+            var sfd = new SaveFileDialog() {
+                Filter = "Binary Files (*.bin)|*.bin|All Files|*"
+            };
 
             if (ofd.ShowDialog() == DialogResult.OK && sfd.ShowDialog() == DialogResult.OK) {
                 var inputStream = File.OpenRead(ofd.FileName);
-                var outputStream = File.Create(sfd.FileName);
-                var writer = new XeWriter(outputStream);
+                var ms = new MemoryStream();
 
-                var lzx = new LzxCompression();
-
-                byte[] compressedBuffer = new byte[0x8000 + 0x1800];
-                byte[] uncompressedBuffer = new byte[0x8000];
-
-                while (inputStream.Position < inputStream.Length) {
-                    int blockSize = 0x8000;
-                    int remaining = (int)(inputStream.Length - inputStream.Position);
-
-                    if(remaining < blockSize) {
-                        throw new NotImplementedException();
-                    }
-
-                    inputStream.Read(uncompressedBuffer, 0, blockSize);
-
-                    int compressedSize = lzx.CompressSingle(uncompressedBuffer, blockSize, ref compressedBuffer, compressedBuffer.Length);
-
-                    writer.WriteUInt16((ushort)compressedSize);
-                    writer.WriteUInt16((ushort)blockSize);
-                    writer.Write(compressedBuffer, 0, compressedSize);
-                }
+                rom.SE.WriteNewKernel(inputStream, ms);
+                ms.Seek(0, SeekOrigin.Begin);
 
                 inputStream.Close();
-                outputStream.Close();
-            }
-        }
 
-        private void encrypt5blButton_Click(object sender, EventArgs e) {
-            var ofd = new OpenFileDialog();
-            var sfd = new SaveFileDialog();
-
-            if (ofd.ShowDialog() == DialogResult.OK && sfd.ShowDialog() == DialogResult.OK) {
-                var inputStream = File.OpenRead(ofd.FileName);
                 var outputStream = File.Create(sfd.FileName);
 
                 var key1 = rom.SC.GetDigestKey(new byte[0x10]);
                 var key2 = rom.SD.GetDigestKey(key1);
 
-                
+                byte[] digestKey;
+                CXBootloader.EncryptDecrypt(ms, outputStream, key2, out digestKey);
 
-                inputStream.Close();
+                ms.Close();
                 outputStream.Close();
             }
         }
